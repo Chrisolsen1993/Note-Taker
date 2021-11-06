@@ -2,6 +2,8 @@ const express = require("express")
 const path = require("path")
 const fs = require("fs");
 const uuid = require("./helpers/uuid")
+// const app = require("./routes/apiRoutes")
+// const app = require("./routes/htmlRoutes")
 // const notes = require('./db/notes');
 
 const app = express()
@@ -17,7 +19,7 @@ app.get("/", (req, res) => {
 app.get("/notes", (req, res) => {
     res.sendFile(path.join(__dirname, "/public/notes.html"))
 })
-// api routes
+//api routes
 app.get("/api/notes", (req, res) => {
    const notes =readNote()
     res.status(200).json(notes);
@@ -59,6 +61,18 @@ app.post("/api/notes", (req, res) => {
         res.status(500).json('Error in posting review');
     }
 })
+
+app.delete("/api/notes/:id", (req, res) => {
+    const notes = readNotes();
+    const updatedNotes = notes.filter((note) => note.id !== req.params.id);
+    fs.writeFile(__dirname + "/db/notes.json", JSON.stringify(updatedNotes), function (error, data) {
+        if (error) {
+          return error
+        }
+        res.json(updatedNotes)
+      })
+    ;
+  });
 
 function readNote(){
     return JSON.parse(fs.readFileSync("./db/notes.json", "utf-8"));
