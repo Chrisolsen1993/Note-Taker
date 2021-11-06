@@ -63,7 +63,7 @@ app.post("/api/notes", (req, res) => {
 })
 
 app.delete("/api/notes/:id", (req, res) => {
-    const notes = readNotes();
+    const notes = readNote();
     const updatedNotes = notes.filter((note) => note.id !== req.params.id);
     fs.writeFile(__dirname + "/db/notes.json", JSON.stringify(updatedNotes), function (error, data) {
         if (error) {
